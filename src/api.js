@@ -18,4 +18,5 @@ export const getCountryUrls = countryCode => {
   return urls;
 };
 
-export const dialyUrl = `${baseUrl}/daily`;
+export const dailyUrl = `${baseUrl}/daily`;
+export const deathsUrl = `${baseUrl}/deaths`;

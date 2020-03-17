@@ -1,5 +1,11 @@
-import { FETCH_GROSS_DATA, FETCH_DAILY_DATA } from "../actions/types";
-const initialState = [];
+import {
+  FETCH_GROSS_DATA,
+  FETCH_DAILY_DATA,
+  CHANGE_COUNTRY_CODE
+} from "../actions/types";
+const initialState = {
+  country: "World"
+};
 
 export default function grossDataReducer(state = initialState, action) {
   switch (action.type) {
@@ -12,6 +18,11 @@ export default function grossDataReducer(state = initialState, action) {
       return {
         ...state,
         dailyData: action.payload
+      };
+    case CHANGE_COUNTRY_CODE:
+      return {
+        ...state,
+        country: action.payload
       };
     default:
       return state;

@@ -1,25 +1,30 @@
 import React, { useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Axios from "axios";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import Header from "./components/Header";
-import { baseUrl } from "./api";
-import PieChart from "./components/PieChart";
+import { baseUrl, dailyUrl } from "./api";
 import SelectField from "./components/SelectField";
-import { FETCH_GROSS_DATA } from "./actions/types";
-import LineChart from "./components/LineChart";
+import {
+  FETCH_GROSS_DATA,
+  FETCH_DAILY_DATA,
+  FETCH_COUNTRIES_AND_CODES
+} from "./actions/types";
+import LineChart from "./components/chart/LineChart";
+import PieChart from "./components/chart/PieChart";
+import { getActiveCases } from "./utils";
 
 function App() {
-  const { casulties } = useSelector(state => state.data);
   const dispatch = useDispatch();
+
   useEffect(() => {
     Axios.get(baseUrl)
       .then(response => {
         if (response.status === 200) {
           const data = [
-            { label: "Confirmed", value: response.data.confirmed.value },
+            { label: "Active", value: response.data.confirmed.value },
             { label: "Deaths", value: response.data.deaths.value },
-            { label: "Recovered", value: response.data.recovered.value }
+            { label: "Recovered", value: getActiveCases(response.data) }
           ];
           dispatch({
             type: FETCH_GROSS_DATA,
@@ -30,14 +35,43 @@ function App() {
       .catch(err => {
         console.log(err);
       });
+    Axios.get(dailyUrl)
+      .then(response => {
+        const { data } = response;
+        const totalData = data.map(d => {
+          return {
+            totalConfirmed: d.totalConfirmed,
+            reportDate: d.reportDate,
+            totalRecovered: d.totalRecovered
+          };
+        });
+        dispatch({
+          type: FETCH_DAILY_DATA,
+          payload: totalData
+        });
+      })
+      .catch(err => console.log(err));
+    Axios.get("https://covid19.mathdro.id/api/countries")
+      .then(response => {
+        if (response.status === 200) {
+          dispatch({
+            type: FETCH_COUNTRIES_AND_CODES,
+            payload: response.data
+          });
+        }
+      })
+      .catch(err => console.log(err));
   }, [dispatch]);
+
   return (
     <>
       <Header />
 
       <div className="container ">
-        <SelectField />
-        <PieChart data={casulties} />
+        <div style={{ maxHeight: "500px", maxWidth: "500px" }}>
+          <SelectField />
+          <PieChart />
+        </div>
         <LineChart />
       </div>
     </>

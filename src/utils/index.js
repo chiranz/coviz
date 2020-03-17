@@ -32,3 +32,12 @@ export const getMonthByName = [
   "Nov",
   "Dec"
 ];
+
+export const getMonthAndDate = timestamp => {
+  const monthAndDate = new Date(timestamp);
+  return getMonthByName[monthAndDate.getMonth()] + " " + monthAndDate.getDate();
+};
+
+export const getActiveCases = data => {
+  return data.confirmed.value - data.recovered.value - data.deaths.value;
+};
