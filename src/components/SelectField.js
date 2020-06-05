@@ -13,10 +13,9 @@ export default function SelectField() {
   const dispatch = useDispatch();
 
   useEffect(() => {
+    console.log(countryCode);
     if (countryCode !== "world") {
-      Axios.get(
-        `https://covid19.mathdro.id/api/countries/${countryCodes[countryCode]}`
-      )
+      Axios.get(`https://covid19.mathdro.id/api/countries/${countryCode}`)
         .then(response => {
           if (response.status === 200) {
             const data = [
@@ -38,18 +37,12 @@ export default function SelectField() {
   const handleChange = e => {
     const { value } = e.target;
     setCountryCode(value);
-    let country;
-    if (value !== "world") {
-      [country] = Object.entries(countries).find(([_, code]) => code === value);
-    } else {
-      country = "World";
-    }
-
     dispatch({
       type: CHANGE_COUNTRY_CODE,
-      payload: country
+      payload: value
     });
   };
+  console.log(countries);
   return (
     <FormGroup>
       <Label for="country">Filter By Country</Label>
@@ -62,11 +55,13 @@ export default function SelectField() {
       >
         <option value="world">World</option>
         {countries &&
-          Object.entries(countries).map(([country, code], i) => (
-            <option datacountry={country} key={i} value={code}>
-              {country}
-            </option>
-          ))}
+          countries.map(({ name, iso3 }, i) => {
+            return (
+              <option datacountry={name} key={i} value={iso3}>
+                {name}
+              </option>
+            );
+          })}
       </Input>
     </FormGroup>
   );

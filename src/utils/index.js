@@ -1,4 +1,5 @@
 import Axios from "axios";
+import { gitCredentials } from "../config";
 
 export const getGrossData = url => {
   Axios.get(url)
@@ -40,4 +41,15 @@ export const getMonthAndDate = timestamp => {
 
 export const getActiveCases = data => {
   return data.confirmed.value - data.recovered.value - data.deaths.value;
+};
+
+export const axiosAuthHelper = ({ url, method }) => {
+  return {
+    method,
+    url,
+    headers: {
+      Authorization: `Bearer ${gitCredentials.token}`,
+      "Content-Type": "application/json"
+    }
+  };
 };

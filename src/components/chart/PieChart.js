@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { Doughnut } from "react-chartjs-2";
+import "chartjs-plugin-labels";
 import { useSelector } from "react-redux";
 
 export default function PieChart() {
-  const { casulties } = useSelector(state => state.data);
-  const { country } = useSelector(state => state.data);
+  const { casulties, country } = useSelector(state => state.data);
   const [data, setData] = useState({
     labels: [],
     datasets: []
@@ -16,9 +16,9 @@ export default function PieChart() {
         datasets: [
           {
             label: "casulties",
-            backgroundColor: ["yellow", "red", "green"],
+            backgroundColor: ["#0d2c54", "#f6511d", "#7fb800"],
             borderColor: "white",
-            hoverBorderColor: ["yellow", "red", "green"],
+            hoverBorderColor: ["#0d2c54", "#f6511d", "#7fb800"],
             borderWidth: 2,
             data: casulties.map(d => d.value)
           }
@@ -37,7 +37,23 @@ export default function PieChart() {
           options={{
             responsive: true,
             animation: { animateScale: true },
-            cutoutPercentage: 60
+            rotation: Math.PI * 1,
+            plugins: {
+              labels: [
+                {
+                  render: "label",
+                  fontColor: "#000",
+                  fontSize: "14",
+                  position: "outside"
+                },
+                {
+                  render: "percentage",
+                  fontSize: "12",
+                  fontStyle: "bold",
+                  fontColor: "#fff"
+                }
+              ]
+            }
           }}
         />
       </div>

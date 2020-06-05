@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { Line } from "react-chartjs-2";
 import { useSelector } from "react-redux";
 import { getMonthAndDate } from "../../utils";
+import LineChart from "./DynamicChart";
 
-export default function LineChart() {
+export default function CasultiesChart() {
   const { dailyData } = useSelector(state => state.data);
   const [data, setData] = useState({
     labels: [],
@@ -17,31 +17,23 @@ export default function LineChart() {
         datasets: [
           {
             label: "Total Casulties",
-            borderColor: "rgba(255,0,0, .5)",
-            backgroundColor: "rgba(255,0,0, .1)",
+            backgroundColor: "rgba(246, 81, 29,1)",
             borderWidth: 2,
             data: dailyData.map(d => d.totalConfirmed)
-          },
-          {
-            label: "Recovered",
-            borderColor: "rgba(0,128,0,0.5)",
-            backgroundColor: "rgba(0,128,0,0.3)",
-            borderWidth: 2,
-            data: dailyData.map(d => d.totalRecovered)
           }
         ]
       });
     }
   }, [dailyData]);
+  const options = {
+    titleText: "Total covid-19 cases",
+    xAxesLabel: "",
+    yAxesLabel: "Total casulties"
+  };
 
   return (
     <div style={{ position: "relative" }}>
-      <Line
-        data={data}
-        options={{
-          responsive: true
-        }}
-      />
+      <LineChart data={data} options={options} chartType="bar" />
     </div>
   );
 }
